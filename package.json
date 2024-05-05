@@ -1,0 +1,19 @@
+{
+  "name": "dj-spotify-playlist",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "http-server --cors public -c-1",
+    "style": "npx tailwindcss -i ./src/input.css -o ./src/output.css",
+    "style:watch": "npx tailwindcss -i ./src/style.css -o ./public/style.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "@tailwindcss/forms": "^0.5.7",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.3"
+  }
+}

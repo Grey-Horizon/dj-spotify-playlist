@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+  <head>
+    <title>DJ Spotify Playlist</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header class="bg-white">
+      <nav
+        class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
+        <div class="flex lg:flex-1">
+          <h1 class="text-slate-900">DJ Spotify Playlist</h1>
+        </div>
+        <div id="action" class="flex flex-1 justify-end gap-6" />
+      </nav>
+    </header>
+
+    <div class="w-full grid min-h-full place-items-center bg-white px-8 pb-16">
+      <div id="main"></div>
+      <div
+        id="playlist"
+        class="w-full lg:max-w-[1025px] md:max-w-[750px]"
+      ></div>
+    </div>
+
+    <template id="logout">
+      <a
+        class="flex items-center gap-x-1"
+        target="_blank"
+        href="{{ external_urls.spotify }}"
+      >
+        <img
+          class="h-8 w-8 rounded-full"
+          src="{{ images.0.url }}"
+          alt="{{ display_name }}"
+        />
+        <div>
+          <h3
+            class="text-base font-semibold leading-7 tracking-tight text-gray-900"
+          >
+            {{ display_name }}
+          </h3>
+        </div>
+      </a>
+      <button
+        id="action-button"
+        class="text-sm font-semibold leading-6 text-gray-900"
+      >
+        Log out
+      </button>
+    </template>
+
+    <template id="landing">
+      <div class="text-center py-24">
+        <h1
+          class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+        >
+          DJ Spotify Playlist
+        </h1>
+        <button
+          id="action-button"
+          class="mt-6 rounded-md bg-spotify px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white hover:text-spotify focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Log in to Spotify <span aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+    </template>
+
+    <template id="new-playlist">
+      <form id="playlist-form" class="w-full">
+        <div class="space-y-12">
+          <div class="mt-10 flex flex-1 gap-x-6 items-center">
+            <label
+              for="playlist-input"
+              class="block text-sm font-medium leading-6 text-gray-900 text-end"
+            >
+              Playlist ID or URL
+            </label>
+            <div class="mt-2">
+              <div
+                class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md min-w-[500px]"
+              >
+                <input
+                  type="text"
+                  id="playlist-input"
+                  class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  placeholder=""
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+          <button
+            type="submit"
+            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Get Playlist
+          </button>
+        </div>
+      </form>
+    </template>
+
+    <template id="view-playlist">
+      <div class="flex flex-1 justify-between">
+        <div>
+          <a target="_blank" href="{{ external_urls.spotify }}"
+            ><h1
+              class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+            >
+              {{ name }}
+            </h1>
+          </a>
+          <a
+            class="flex items-center gap-x-1"
+            target="_blank"
+            href="{{ owner.external_urls.spotify }}"
+          >
+            <div>
+              <h3
+                class="text-base font-semibold leading-7 tracking-tight text-gray-900"
+              >
+                {{ owner.display_name }}
+              </h3>
+            </div>
+          </a>
+          {{#description}}
+          <p class="mt-2 text-base leading-7 text-gray-600">
+            {{ description }}
+          </p>
+          {{/description}}
+        </div>
+        <div class="align-bottom">
+          <button
+            id="download-csv"
+            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Download as CSV
+          </button>
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="sm:flex sm:items-center">
+          <div class="sm:flex-auto">
+            <table class="min-w-full divide-y divide-gray-300">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                  >
+                    <span class="sr-only">Index</span>
+                  </th>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Artist(s)
+                  </th>
+                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-3">
+                    <span class="sr-only">Sample</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white">
+                <tr class="even:bg-gray-50">
+                  <!-- {{#tracks.items}} -->
+                  <td
+                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3"
+                  >
+                    {{track.index}}
+                  </td>
+                  <td
+                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3"
+                  >
+                    {{track.name}}
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{allArtists}}
+                  </td>
+                  <td
+                    class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"
+                  >
+                    <audio id="audio-{{track.id}}">
+                      <source src="{{track.preview_url}}" />
+                    </audio>
+                    <button
+                      id="audio-button-{{track.id}}"
+                      data-audio-id="audio-{{track.id}}"
+                      type="button"
+                      class="audio-button text-indigo-600 hover:text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      <i class="fa-solid fa-play pointer-events-none"></i>
+                    </button>
+                  </td>
+                </tr>
+                <!-- {{/tracks.items}} -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="loading">
+      <div class="text-center py-24">
+        <h1
+          class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+        >
+          Loading...
+        </h1>
+      </div>
+    </template>
+
+    <template id="uh-oh">
+      <h1
+        class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+      >
+        Uh-oh!
+      </h1>
+      <p class="mt-1 text-base leading-7 text-gray-600">{{ message }}</p>
+    </template>
+
+    <script
+      src="https://kit.fontawesome.com/cbb1ddd471.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
