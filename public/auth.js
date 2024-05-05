@@ -1,5 +1,8 @@
 const clientId = "d0d55991a2ef4703a156a4249d66acb1"; // your clientId
-const redirectUrl = window.origin; // your redirect URL - must be localhost URL and/or HTTPS
+// Recreate path 
+const origin = new URL(window.location.href);
+origin.search = "";
+const redirectUrl = origin.toString(); // your redirect URL - must be localhost URL and/or HTTPS
 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
