@@ -96,9 +96,18 @@ async function onSubmit(event) {
     document.getElementById("view-playlist").scrollIntoView();
     document.getElementById("download-csv").onclick = () => {
       const csv = [
-        ["Name", "Artists"].join(","),
+        ["Name", "Artists", "Sample Link", "Song Link", "Arist Link"].join(","),
         ...playlist.tracks.items.map((item) =>
-          [`"${item.track.name}"`, `"${item.allArtists}"`].join(",")
+          [
+            item.track.name,
+            item.allArtists,
+            item.track.preview_url,
+            item.track.external_urls.spotify,
+            item.track.artists[0].external_urls.spotify,
+          ]
+            .map((val) => val.replace(/"/g, '""'))
+            .map((val) => `"${val}"`)
+            .join(",")
         ),
       ];
 

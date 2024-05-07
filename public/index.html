@@ -18,12 +18,25 @@
       </nav>
     </header>
 
-    <div class="w-full grid min-h-full place-items-center bg-white px-8 pb-16">
-      <div id="main"></div>
+    <div
+      class="w-full grid min-h-screen place-items-center bg-white px-8 pb-16"
+    >
+      <div id="main" class="flex flex-1 pb-8"></div>
       <div
         id="playlist"
         class="w-full lg:max-w-[1025px] md:max-w-[750px]"
       ></div>
+
+      <footer class="bg-white" aria-labelledby="footer-heading">
+        <div class="mx-auto flex items-center justify-between p-6 lg:px-8">
+          <div class="flex lg:flex-1">
+            Powered by
+            <a href="https://spotify.com" target="_blank">
+              <img class="ml-4 h-8" src="Spotify_Logo_RGB_Green.png" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
 
     <template id="logout">
@@ -109,8 +122,8 @@
     <template id="view-playlist">
       <div class="flex flex-1 justify-between">
         <div>
-          <a target="_blank" href="{{ external_urls.spotify }}"
-            ><h1
+          <a target="_blank" href="{{ external_urls.spotify }}">
+            <h1
               class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
             >
               {{ name }}
@@ -184,10 +197,16 @@
                   <td
                     class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3"
                   >
-                    {{track.name}}
+                    <a href="{{track.external_urls.spotify}}" target="_blank">
+                      {{track.name}}</a
+                    >
                   </td>
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{allArtists}}
+                    <a
+                      href="{{track.artists.0.external_urls.spotify}}"
+                      target="_blank"
+                      >{{allArtists}}</a
+                    >
                   </td>
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"
