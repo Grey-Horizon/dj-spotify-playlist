@@ -12,7 +12,12 @@ const authorized = await isAuthorized();
 let userData;
 
 if (authorized) {
-  userData = await getUserData();
+  try {
+    userData = await getUserData();
+  } catch (e) {
+    console.log(e);
+    logout();
+  }
 }
 
 // Set action button

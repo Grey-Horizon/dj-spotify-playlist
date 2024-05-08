@@ -1,5 +1,5 @@
 const clientId = "d0d55991a2ef4703a156a4249d66acb1"; // your clientId
-// Recreate path 
+// Recreate path
 const origin = new URL(window.location.href);
 origin.search = "";
 const redirectUrl = origin.toString(); // your redirect URL - must be localhost URL and/or HTTPS
@@ -117,26 +117,36 @@ async function getToken(code) {
 }
 
 async function refreshToken() {
-  const response = await fetch(tokenEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: clientId,
-      grant_type: "refresh_token",
-      refresh_token: currentToken.refresh_token,
-    }),
-  });
+  try {
+    const response = await fetch(tokenEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        grant_type: "refresh_token",
+        refresh_token: currentToken.refresh_token,
+      }),
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      logout();
+    }
+
+    return await response.json();
+  } catch (e) {
+    console.log(e);
     logout();
   }
-
-  return await response.json();
 }
 
-export async function authFetch(url, options) {
+export async function authFetch(url, options, depth = 0) {
+  if (depth > 2) {
+    console.log("stuck in refresh loop");
+    return logout();
+  }
+
   let response = await fetch(url, {
     ...options,
     headers: {
@@ -148,7 +158,7 @@ export async function authFetch(url, options) {
   if (response.status === 401) {
     const token = await refreshToken();
     currentToken.save(token);
-    response = await authFetch(url, options);
+    return await authFetch(url, options, depth + 1);
   }
 
   if (!response.ok) {
