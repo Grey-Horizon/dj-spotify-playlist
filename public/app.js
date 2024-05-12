@@ -20,9 +20,9 @@ if (!authorized) {
   console.log("authorized");
   try {
     userData = await getUserData();
-  } catch (e) {
+  } catch (err) {
+    renderProblem(err.message);
     console.log(e);
-    logout();
   }
 
   // Set action button
