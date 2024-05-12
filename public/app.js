@@ -11,28 +11,24 @@ await flow();
 const authorized = await isAuthorized();
 let userData;
 
-if (authorized) {
+// Main entry point
+if (!authorized) {
+  console.log("not authorized");
+  renderTemplate("main", "landing");
+  document.getElementById("action-button").onclick = redirectToSpotifyAuthorize;
+} else {
+  console.log("authorized");
   try {
     userData = await getUserData();
   } catch (e) {
     console.log(e);
     logout();
   }
-}
 
-// Set action button
-if (authorized) {
+  // Set action button
   renderTemplate("action", "logout", userData);
   document.getElementById("action-button").onclick = logout;
-}
 
-// Main entry point
-if (!authorized) {
-  renderTemplate("main", "landing");
-  document.getElementById("action-button").onclick = redirectToSpotifyAuthorize;
-}
-
-if (authorized) {
   renderTemplate("main", "new-playlist");
   document.getElementById("playlist-form").onsubmit = onSubmit;
 

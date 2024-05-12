@@ -40,26 +40,31 @@ const currentToken = {
 };
 
 export async function flow() {
+  console.log("flow");
   // On page load, try to fetch auth code from current browser search URL
   const args = new URLSearchParams(window.location.search);
   const code = args.get("code");
 
   // If we find a code, we're in a callback, do a token exchange
   if (code) {
+    console.log("has code");
     const token = await getToken(code);
     currentToken.save(token);
+    console.log("token saved", currentToken.expires_in);
 
     // Remove code from URL so we can refresh correctly.
     const url = new URL(window.location.href);
     url.searchParams.delete("code");
     url.search = localStorage.getItem("url_params") || "";
 
+    console.log("updating url");
     const updatedUrl = url.search ? url.href : url.href.replace("?", "");
     window.history.replaceState({}, document.title, updatedUrl);
   }
 }
 
 export async function redirectToSpotifyAuthorize() {
+  console.log("logging in ");
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const randomValues = crypto.getRandomValues(new Uint8Array(64));
@@ -94,68 +99,63 @@ export async function redirectToSpotifyAuthorize() {
     redirect_uri: redirectUrl,
   };
 
+  console.log("going to spotify");
   authUrl.search = new URLSearchParams(params).toString();
   window.location.href = authUrl.toString(); // Redirect the user to the authorization server for login
 }
 
 // Soptify API Calls
 async function getToken(code) {
-  try {
-    const code_verifier = localStorage.getItem("code_verifier");
+  console.log("get token");
+  const code_verifier = localStorage.getItem("code_verifier");
 
-    const response = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: clientId,
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: redirectUrl,
-        code_verifier: code_verifier,
-      }),
-    });
+  const response = await fetch(tokenEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: redirectUrl,
+      code_verifier: code_verifier,
+    }),
+  });
 
-    if (!response.ok) {
-      logout();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log(e);
+  if (!response.ok) {
+    console.log("get token not ok, logging out");
     logout();
   }
+
+  return await response.json();
 }
 
 async function refreshToken() {
-  try {
-    const response = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: clientId,
-        grant_type: "refresh_token",
-        refresh_token: currentToken.refresh_token,
-      }),
-    });
+  console.log("refresh token");
+  const response = await fetch(tokenEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      grant_type: "refresh_token",
+      refresh_token: currentToken.refresh_token,
+    }),
+  });
 
-    if (!response.ok) {
-      logout();
-    }
-
-    return await response.json();
-  } catch (e) {
-    console.log(e);
+  if (!response.ok) {
+    console.log("refresh token not ok, logging out");
     logout();
   }
+
+  return await response.json();
 }
 
 export async function authFetch(url, options, depth = 0) {
   if (depth > 2) {
-    console.log("stuck in refresh loop");
+    console.log("auth fetch stuck in refresh loop");
     return logout();
   }
 
@@ -168,12 +168,14 @@ export async function authFetch(url, options, depth = 0) {
   });
 
   if (response.status === 401) {
+    console.log("auth fetch 401 response getting refresh token");
     const token = await refreshToken();
     currentToken.save(token);
     return await authFetch(url, options, depth + 1);
   }
 
   if (!response.ok) {
+    console.log("auth fetch response not ok");
     const res = await response.json();
     throw new Error(
       `Failed to fetch data from Spotify API, ${res.error.message}`
@@ -184,6 +186,7 @@ export async function authFetch(url, options, depth = 0) {
 }
 
 export async function isAuthorized() {
+  console.log("is authoized called");
   if (!currentToken.access_token) {
     return false;
   }
@@ -209,6 +212,7 @@ export async function getCurrentToken() {
 }
 
 export function logout() {
+  console.log("logging out");
   localStorage.clear();
   window.location.replace(redirectUrl);
 }
