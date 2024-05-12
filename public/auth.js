@@ -26,6 +26,9 @@ const currentToken = {
 
   save: function (response) {
     const { access_token, refresh_token, expires_in } = response;
+    if (!access_token || !refresh_token || !expires_in) {
+      throw ("response couldn't be parsed", response);
+    }
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
     localStorage.setItem("expires_in", expires_in);
@@ -97,23 +100,32 @@ export async function redirectToSpotifyAuthorize() {
 
 // Soptify API Calls
 async function getToken(code) {
-  const code_verifier = localStorage.getItem("code_verifier");
+  try {
+    const code_verifier = localStorage.getItem("code_verifier");
 
-  const response = await fetch(tokenEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      client_id: clientId,
-      grant_type: "authorization_code",
-      code: code,
-      redirect_uri: redirectUrl,
-      code_verifier: code_verifier,
-    }),
-  });
+    const response = await fetch(tokenEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        client_id: clientId,
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: redirectUrl,
+        code_verifier: code_verifier,
+      }),
+    });
 
-  return await response.json();
+    if (!response.ok) {
+      logout();
+    }
+
+    return await response.json();
+  } catch (e) {
+    console.log(e);
+    logout();
+  }
 }
 
 async function refreshToken() {
@@ -196,7 +208,7 @@ export async function getCurrentToken() {
   return currentToken;
 }
 
-export async function logout() {
+export function logout() {
   localStorage.clear();
-  window.location.reload();
+  window.location.replace(redirectUrl);
 }
