@@ -158,10 +158,10 @@
         </div>
         <div class="align-bottom">
           <button
-            id="download-csv"
+            id="download-template"
             class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Download as CSV
+            Download as Word Doc
           </button>
         </div>
       </div>
@@ -259,6 +259,10 @@
       <p class="mt-1 text-base leading-7 text-gray-600">{{ message }}</p>
     </template>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.45.0/docxtemplater.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.6/dist/pizzip-utils.js"></script>
     <script
       src="https://kit.fontawesome.com/cbb1ddd471.js"
       crossorigin="anonymous"

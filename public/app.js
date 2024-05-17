@@ -5,6 +5,7 @@ import {
   logout,
   redirectToSpotifyAuthorize,
 } from "./auth.js";
+import { generate } from "./template.js";
 
 // Auth entry point
 await flow();
@@ -95,31 +96,16 @@ async function onSubmit(event) {
       }
     );
     document.getElementById("view-playlist").scrollIntoView();
-    document.getElementById("download-csv").onclick = () => {
-      const csv = [
-        ["Name", "Artists", "Sample Link", "Song Link", "Arist Link"].join(","),
-        ...playlist.tracks.items.map((item) =>
-          [
-            item.track.name,
-            item.allArtists,
-            item.track.preview_url,
-            item.track.external_urls.spotify,
-            item.track.artists[0].external_urls.spotify,
-          ]
-            .map((val) => val.replace(/"/g, '""'))
-            .map((val) => `"${val}"`)
-            .join(",")
-        ),
-      ];
-
-      const blob = new Blob([csv.join("\n")], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${playlist.name}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    document.getElementById("download-template").onclick = () => {
+      const data = {
+        items: playlist.tracks.items.map((item) => ({
+          artists: item.allArtists,
+          name: item.track.name,
+        })),
+        url: playlist.external_urls.spotify,
+      };
+      generate(data, playlist.name);
+      return;
     };
   } catch (err) {
     renderProblem(err.message);
