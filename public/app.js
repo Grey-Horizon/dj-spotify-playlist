@@ -15,8 +15,10 @@ let userData;
 // Main entry point
 if (!authorized) {
   console.log("not authorized");
-  renderTemplate("main", "landing");
-  document.getElementById("action-button").onclick = redirectToSpotifyAuthorize;
+  renderTemplate("main", "landing").then(() => {
+    document.getElementById("action-button").onclick =
+      redirectToSpotifyAuthorize;
+  });
 } else {
   console.log("authorized");
   try {
@@ -27,11 +29,13 @@ if (!authorized) {
   }
 
   // Set action button
-  renderTemplate("action", "logout", userData);
-  document.getElementById("action-button").onclick = logout;
+  renderTemplate("action", "logout", userData).then(() => {
+    document.getElementById("action-button").onclick = logout;
+  });
 
-  renderTemplate("main", "new-playlist");
-  document.getElementById("playlist-form").onsubmit = onSubmit;
+  renderTemplate("main", "new-playlist").then(() => {
+    document.getElementById("playlist-form").onsubmit = onSubmit;
+  });
 
   const args = new URLSearchParams(window.location.search);
   const input = args.get("input");
@@ -61,7 +65,7 @@ async function onSubmit(event) {
   if (!playlistId) {
     return renderProblem("Invalid playlist URL");
   }
-  renderTemplate("playlist", "loading");
+  await renderTemplate("playlist", "loading");
   try {
     const playlist = await getPlaylist(`playlists/${playlistId}`);
 
@@ -89,13 +93,13 @@ async function onSubmit(event) {
       item.track.index = idx + 1;
     });
 
-    renderTemplate("playlist", "view-playlist", playlist);
+    await renderTemplate("playlist", "view-playlist", playlist);
     Array.from(document.getElementsByClassName("audio-button")).forEach(
       (button) => {
         button.onclick = audioButtonHandler;
       }
     );
-    document.getElementById("view-playlist").scrollIntoView();
+    document.getElementById("playlist").scrollIntoView();
     document.getElementById("download-template").onclick = () => {
       const data = {
         items: playlist.tracks.items.map((item) => ({
@@ -133,7 +137,10 @@ function audioButtonHandler(event) {
 
 // HTML Template Rendering with Mustache
 function renderTemplate(targetId, templateId, data = {}) {
-  const template = document.getElementById(templateId).innerHTML;
-  const rendered = Mustache.render(template, data);
-  document.getElementById(targetId).innerHTML = rendered;
+  return fetch(`templates/${templateId}.html`)
+    .then((response) => response.text())
+    .then((template) => {
+      const rendered = Mustache.render(template, data);
+      document.getElementById(targetId).innerHTML = rendered;
+    });
 }

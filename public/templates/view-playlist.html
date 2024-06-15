@@ -1,0 +1,108 @@
+<div class="flex flex-1 justify-between">
+  <div>
+    <a target="_blank" href="{{ external_urls.spotify }}">
+      <h1
+        class="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl"
+      >
+        {{ name }}
+      </h1>
+    </a>
+    <a
+      class="flex items-center gap-x-1"
+      target="_blank"
+      href="{{ owner.external_urls.spotify }}"
+    >
+      <div>
+        <h3
+          class="text-base font-semibold leading-7 tracking-tight text-gray-900"
+        >
+          {{ owner.display_name }}
+        </h3>
+      </div>
+    </a>
+    {{#description}}
+    <p class="mt-2 text-base leading-7 text-gray-600">{{ description }}</p>
+    {{/description}}
+  </div>
+  <div class="align-bottom">
+    <button
+      id="download-template"
+      class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      Download as Word Doc
+    </button>
+  </div>
+</div>
+<div class="mt-6">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <table class="min-w-full divide-y divide-gray-300">
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+            >
+              <span class="sr-only">Index</span>
+            </th>
+            <th
+              scope="col"
+              class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+            >
+              Artist(s)
+            </th>
+            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-3">
+              <span class="sr-only">Sample</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          <tr class="even:bg-gray-50">
+            <!-- {{#tracks.items}} -->
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3"
+            >
+              {{track.index}}
+            </td>
+            <td
+              class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-3"
+            >
+              <a href="{{track.external_urls.spotify}}" target="_blank">
+                {{track.name}}</a
+              >
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+              <a
+                href="{{track.artists.0.external_urls.spotify}}"
+                target="_blank"
+                >{{allArtists}}</a
+              >
+            </td>
+            <td
+              class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3"
+            >
+              <audio id="audio-{{track.id}}">
+                <source src="{{track.preview_url}}" />
+              </audio>
+              <button
+                id="audio-button-{{track.id}}"
+                data-audio-id="audio-{{track.id}}"
+                type="button"
+                class="audio-button text-indigo-600 hover:text-indigo-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                <i class="fa-solid fa-play pointer-events-none"></i>
+              </button>
+            </td>
+          </tr>
+          <!-- {{/tracks.items}} -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
