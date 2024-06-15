@@ -1,52 +1,18 @@
-import {
-  authFetch,
-  isAuthorized,
-  flow,
-  logout,
-  redirectToSpotifyAuthorize,
-} from "./auth.js";
+import renderTemplate from "./render.js";
 import { generate } from "./template.js";
+import { authFetch } from "./auth.js";
 
-// Auth entry point
-await flow();
-const authorized = await isAuthorized();
-let userData;
-
-// Main entry point
-if (!authorized) {
-  console.log("not authorized");
-  renderTemplate("main", "landing").then(() => {
-    document.getElementById("action-button").onclick =
-      redirectToSpotifyAuthorize;
-  });
-} else {
-  console.log("authorized");
-  try {
-    userData = await getUserData();
-  } catch (err) {
-    renderProblem(err.message);
-    console.log(e);
-  }
-
-  // Set action button
-  renderTemplate("action", "logout", userData).then(() => {
-    document.getElementById("action-button").onclick = logout;
-  });
-
+export default function init() {
   renderTemplate("main", "new-playlist").then(() => {
     document.getElementById("playlist-form").onsubmit = onSubmit;
+
+    const args = new URLSearchParams(window.location.search);
+    const input = args.get("input");
+    if (input) {
+      document.getElementById("playlist-input").value = input;
+      onSubmit({ preventDefault: () => {} });
+    }
   });
-
-  const args = new URLSearchParams(window.location.search);
-  const input = args.get("input");
-  if (input) {
-    document.getElementById("playlist-input").value = input;
-    onSubmit({ preventDefault: () => {} });
-  }
-}
-
-async function getUserData() {
-  return await authFetch("https://api.spotify.com/v1/me", {});
 }
 
 async function getPlaylist(id) {
@@ -133,14 +99,4 @@ function audioButtonHandler(event) {
     icon.classList.add("fa-play");
     icon.classList.remove("fa-pause");
   }
-}
-
-// HTML Template Rendering with Mustache
-function renderTemplate(targetId, templateId, data = {}) {
-  return fetch(`templates/${templateId}.html`)
-    .then((response) => response.text())
-    .then((template) => {
-      const rendered = Mustache.render(template, data);
-      document.getElementById(targetId).innerHTML = rendered;
-    });
 }

@@ -798,6 +798,10 @@ select {
   margin-top: 1.5rem;
 }
 
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
 .block {
   display: block;
 }
@@ -806,12 +810,20 @@ select {
   display: flex;
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
 .table {
   display: table;
 }
 
 .grid {
   display: grid;
+}
+
+.hidden {
+  display: none;
 }
 
 .h-8 {
@@ -882,6 +894,12 @@ select {
   margin-bottom: calc(3rem * var(--tw-space-y-reverse));
 }
 
+.space-x-8 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(2rem * var(--tw-space-x-reverse));
+  margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
@@ -907,6 +925,19 @@ select {
 
 .border-0 {
   border-width: 0px;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px;
+}
+
+.border-indigo-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(99 102 241 / var(--tw-border-opacity));
+}
+
+.border-transparent {
+  border-color: transparent;
 }
 
 .bg-indigo-600 {
@@ -977,6 +1008,11 @@ select {
   padding-bottom: 1rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 .pb-16 {
   padding-bottom: 4rem;
 }
@@ -1003,6 +1039,10 @@ select {
 
 .pr-4 {
   padding-right: 1rem;
+}
+
+.pt-1 {
+  padding-top: 0.25rem;
 }
 
 .text-left {
@@ -1145,6 +1185,11 @@ select {
   --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
 }
 
+.hover\:border-gray-300:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+
 .hover\:bg-indigo-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(99 102 241 / var(--tw-bg-opacity));
@@ -1163,6 +1208,11 @@ select {
 .hover\:text-spotify:hover {
   --tw-text-opacity: 1;
   color: rgb(29 185 84 / var(--tw-text-opacity));
+}
+
+.hover\:text-gray-700:hover {
+  --tw-text-opacity: 1;
+  color: rgb(55 65 81 / var(--tw-text-opacity));
 }
 
 .focus\:ring-0:focus {
@@ -1188,6 +1238,10 @@ select {
 }
 
 @media (min-width: 640px) {
+  .sm\:ml-6 {
+    margin-left: 1.5rem;
+  }
+
   .sm\:flex {
     display: flex;
   }
@@ -1202,6 +1256,12 @@ select {
 
   .sm\:items-center {
     align-items: center;
+  }
+
+  .sm\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(2rem * var(--tw-space-x-reverse));
+    margin-left: calc(2rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
   .sm\:pl-3 {
