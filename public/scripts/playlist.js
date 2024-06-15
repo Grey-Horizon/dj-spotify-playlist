@@ -1,9 +1,13 @@
-import renderTemplate from "./render.js";
+import { renderTemplate, renderProblem } from "./render.js";
 import { generate } from "./template.js";
 import { authFetch } from "./auth.js";
 
 export default function init() {
-  renderTemplate("main", "new-playlist").then(() => {
+  renderTemplate("main", "form", {
+    label: "Playlist ID or URL",
+    button: "Get Playlist",
+    text: true,
+  }).then(() => {
     document.getElementById("playlist-form").onsubmit = onSubmit;
 
     const args = new URLSearchParams(window.location.search);
@@ -17,10 +21,6 @@ export default function init() {
 
 async function getPlaylist(id) {
   return await authFetch(`https://api.spotify.com/v1/${id}`, {});
-}
-
-function renderProblem(message = "Something went wrong. Please try again.") {
-  renderTemplate("playlist", "uh-oh", { message });
 }
 
 async function onSubmit(event) {

@@ -6,7 +6,8 @@ import {
   redirectToSpotifyAuthorize,
 } from "./auth.js";
 import playlistPage from "./playlist.js";
-import renderTemplate from "./render.js";
+import cvePage from "./csv.js";
+import { renderTemplate } from "./render.js";
 
 // Auth entry point
 await flow();
@@ -37,7 +38,7 @@ if (!authorized) {
   if (window.location.pathname === "/") {
     playlistPage();
   } else if (window.location.pathname === "/csv") {
-    console.log("csv");
+    cvePage();
   } else {
     renderProblem("Page not found");
   }
