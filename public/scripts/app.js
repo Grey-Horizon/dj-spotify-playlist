@@ -35,12 +35,10 @@ if (!authorized) {
     document.getElementById("action-button").onclick = logout;
   });
 
-  if (window.location.pathname === "/") {
-    playlistPage();
-  } else if (window.location.pathname === "/csv") {
+  if (window.location.pathname.endsWith("/csv")) {
     cvePage(userData);
   } else {
-    renderProblem("Page not found");
+    playlistPage();
   }
 }
 
