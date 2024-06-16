@@ -7,7 +7,7 @@ const redirectUrl = origin.toString(); // your redirect URL - must be localhost 
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
 const scope =
-  "user-read-private user-read-email playlist-read-private playlist-read-collaborative";
+  "user-read-private user-read-email playlist-read-private playlist-read-collaborative playlist-modify-public";
 
 // Data structure that manages the current active token, caching it in localStorage
 const currentToken = {

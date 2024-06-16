@@ -38,7 +38,7 @@ if (!authorized) {
   if (window.location.pathname === "/") {
     playlistPage();
   } else if (window.location.pathname === "/csv") {
-    cvePage();
+    cvePage(userData);
   } else {
     renderProblem("Page not found");
   }
