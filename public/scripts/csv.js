@@ -31,25 +31,20 @@ function getTracks(userData) {
     // Get the track and artist from each row
     const tracks = await Promise.all(
       rows
-        .map((row, idx) => {
+        .map((row) => {
           return {
-            index: idx + 1,
             // Strip * from the strings
             track: stripStar(row[0]),
             artist: stripStar(row[1]),
           };
         })
         .map((track) => {
-          return authFetch(
-            `https://api.spotify.com/v1/search?q=track:${track.track}%20artist:${track.artist}&type=track&limit=1`,
-            {}
-          )
-            .then((data) => {
-              const searchResults = data.tracks.items;
-              if (searchResults.length === 0) {
+          return findTrack(track.track, track.artist)
+            .then((result) => {
+              if (!result) {
                 return { ...track, found: false };
               }
-              const result = searchResults[0];
+
               return {
                 ...track,
                 found: true,
@@ -62,6 +57,22 @@ function getTracks(userData) {
             });
         })
     );
+
+    // sort tracks by found
+    tracks.sort((a, b) => {
+      if (a.found && !b.found) {
+        return -1;
+      } else if (!a.found && b.found) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    tracks.forEach((track, idx) => {
+      track.index = idx + 1;
+    });
+
     await renderTemplate("playlist", "create-playlist", { tracks });
     setupAudioButtons();
     document.getElementById("playlist").scrollIntoView();
@@ -70,6 +81,20 @@ function getTracks(userData) {
       tracks
     );
   };
+}
+
+function findTrack(track, artist, depth = 0) {
+  return authFetch(
+    `https://api.spotify.com/v1/search?q=track:${track}%20artist:${artist}&type=track&limit=1`,
+    {}
+  ).then((data) => {
+    const searchResults = data.tracks.items;
+    if (searchResults.length === 0 && depth < 1) {
+      return findTrack(stripBrackets(track), stripBrackets(artist), depth + 1);
+    } else if (searchResults.length > 0) {
+      return searchResults[0];
+    }
+  });
 }
 
 function createPlaylist(userData, tracks) {
@@ -94,7 +119,7 @@ function createPlaylist(userData, tracks) {
           body: JSON.stringify({ uris }),
         }
       );
-      await renderTemplate("playlist", "created-playlist", {
+      await renderTemplate("create-playlist-header", "created-playlist", {
         name,
         url: playlist.external_urls.spotify,
       });
@@ -107,4 +132,13 @@ function createPlaylist(userData, tracks) {
 
 function stripStar(string) {
   return string.startsWith("* ") ? string.replace("* ", "") : string;
+}
+
+/**
+ *
+ * @param {string} string
+ * @returns
+ */
+function stripBrackets(string) {
+  return string.replace(/\(.*\).*/, "").trim();
 }
