@@ -7,7 +7,7 @@ import {
 } from "./auth.js";
 import playlistPage from "./playlist.js";
 import cvePage from "./csv.js";
-import { renderProblem, renderTemplate } from "./render.js";
+import { renderNothing, renderProblem, renderTemplate } from "./render.js";
 
 // Auth entry point
 await flow();
@@ -43,11 +43,13 @@ if (!authorized) {
   document.getElementById("playlist-to-word").onclick = function () {
     document.getElementById("playlist-to-word").className = activeTab;
     document.getElementById("csv-to-playlist").className = inActiveTab;
+    renderNothing("playlist");
     playlistPage();
   };
   document.getElementById("csv-to-playlist").onclick = function () {
     document.getElementById("playlist-to-word").className = inActiveTab;
     document.getElementById("csv-to-playlist").className = activeTab;
+    renderNothing("playlist");
     cvePage(userData);
   };
 

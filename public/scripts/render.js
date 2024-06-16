@@ -13,3 +13,7 @@ export function renderProblem(
 ) {
   renderTemplate("playlist", "uh-oh", { message });
 }
+
+export function renderNothing(targetId) {
+  document.getElementById(targetId).innerHTML = "";
+}
