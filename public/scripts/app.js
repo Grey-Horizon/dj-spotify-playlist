@@ -35,11 +35,23 @@ if (!authorized) {
     document.getElementById("action-button").onclick = logout;
   });
 
-  if (window.location.pathname.endsWith("/csv")) {
-    cvePage(userData);
-  } else {
+  const activeTab =
+    "cursor-pointer inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900";
+  const inActiveTab =
+    "cursor-pointer inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700";
+
+  document.getElementById("playlist-to-word").onclick = function () {
+    document.getElementById("playlist-to-word").className = activeTab;
+    document.getElementById("csv-to-playlist").className = inActiveTab;
     playlistPage();
-  }
+  };
+  document.getElementById("csv-to-playlist").onclick = function () {
+    document.getElementById("playlist-to-word").className = inActiveTab;
+    document.getElementById("csv-to-playlist").className = activeTab;
+    cvePage(userData);
+  };
+
+  playlistPage();
 }
 
 async function getUserData() {
