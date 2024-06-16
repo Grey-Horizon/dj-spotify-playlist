@@ -7,7 +7,7 @@ import {
 } from "./auth.js";
 import playlistPage from "./playlist.js";
 import cvePage from "./csv.js";
-import { renderTemplate } from "./render.js";
+import { renderProblem, renderTemplate } from "./render.js";
 
 // Auth entry point
 await flow();
